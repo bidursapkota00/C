@@ -7,7 +7,244 @@
 1. [User-Defined Functions](#user-defined-functions)
 2. [Arrays and Strings](#arrays-and-strings)
 3. [Structures](#structures)
-4. [Structures](#pointers)
+4. [Pointers](#pointers)
+
+In C, a macro is a fragment of code defined using the preprocessor directive #define.
+Macros allow code substitution before compilation, meaning the compiler sees the replaced text — not the macro itself.
+
+```c
+#define PI 3.14159
+#define SQUARE(x) ((x) * (x))
+```
+
+```c
+#include <stdio.h>
+
+//int add(int*, int*);
+void add(int*, int*, int*);
+
+int main() {
+	int a = 5, b = 10, sum = 0;
+	add(&a, &b, &sum);
+	printf("Sum is: %d", sum);
+	return 0;
+}
+
+void add(int *a, int *b, int *sum) {
+	*a = 20;
+	*sum = *a + *b;
+}
+
+/*
+int add(int *a, int *b) {
+	int sum;
+	sum = *a + *b;
+	return sum;
+}
+*/
+```
+
+Excellent — “`static`” in **C** is one of those keywords that seems simple at first but actually affects **scope**, **lifetime**, **linkage**, and **memory** depending on where and how it’s used. Let’s go through everything clearly and systematically 👇
+
+---
+
+## 🧩 1️⃣ What `static` means in general
+
+`static` is a **storage class specifier**.
+It tells the compiler two main things:
+
+1. **Lifetime:** The variable exists **for the entire program run** (not destroyed after leaving its scope).
+2. **Visibility (Scope):** It’s visible only **within the file or function where it’s declared**.
+
+So `static` makes a variable **persistent** but **restricted in visibility**.
+
+---
+
+## 🏠 2️⃣ Static Variables
+
+### (a) **Static Local Variable (Inside a function)**
+
+When declared **inside a function**, a static variable:
+
+- Retains its value **between function calls**.
+- Is **initialized only once**, not every time the function runs.
+- Has **function scope** (visible only inside that function).
+- Is stored in **data segment**, not on stack.
+
+#### Example:
+
+```c
+#include <stdio.h>
+
+void counter() {
+    static int count = 0;  // initialized only once
+    count++;
+    printf("Count = %d\n", count);
+}
+
+int main() {
+    counter();  // Count = 1
+    counter();  // Count = 2
+    counter();  // Count = 3
+    return 0;
+}
+```
+
+**Explanation:**
+`count` is initialized only once and **retains its value** between calls.
+If it weren’t static, it would reset to 0 every time the function runs.
+
+---
+
+### (b) **Static Global Variable (Outside any function)**
+
+When declared **outside any function**, it:
+
+- Has **file scope** (visible only in that `.c` file).
+- Cannot be accessed from other source files (even with `extern`).
+- Lifetime is **the entire program**.
+
+#### Example:
+
+**file1.c**
+
+```c
+#include <stdio.h>
+static int secret = 42;  // visible only in file1.c
+
+void showSecret() {
+    printf("Secret = %d\n", secret);
+}
+```
+
+**file2.c**
+
+```c
+#include <stdio.h>
+extern int secret;  // ❌ error: cannot access static variable in another file
+
+int main() {
+    showSecret();  // works if showSecret() is not static
+}
+```
+
+**Explanation:**
+`static` here gives **internal linkage**, so `secret` cannot be seen outside `file1.c`.
+
+---
+
+## 🧱 3️⃣ Static Functions
+
+When you declare a function as `static`, it:
+
+- Is **visible only within that file**.
+- Cannot be called from another file (even with a prototype).
+
+#### Example:
+
+```c
+// file1.c
+static void helper() {
+    printf("Hidden helper\n");
+}
+
+void publicFunc() {
+    helper();  // works here
+}
+```
+
+```c
+// file2.c
+void publicFunc();
+void helper();  // ❌ no access (static in file1.c)
+```
+
+This is used to **limit function visibility** and **avoid name collisions** across multiple source files.
+
+---
+
+## 🧮 4️⃣ Static with Arrays and Structures
+
+You can also make arrays or structures static:
+
+```c
+void demo() {
+    static int arr[3] = {1, 2, 3};
+    arr[0]++;
+    printf("%d\n", arr[0]);
+}
+```
+
+The array persists across calls.
+
+---
+
+## ⚙️ 5️⃣ Initialization Rules
+
+- Static variables are **initialized only once**.
+- Default initialization is **zero** if no explicit value is provided.
+- Initialization must be **constant** (no runtime values).
+
+#### Example:
+
+```c
+static int x;         // initialized to 0
+static int y = 5;     // explicitly initialized
+static int z = func(); // ❌ error: cannot initialize with a function call
+```
+
+---
+
+## 🧠 6️⃣ Memory Placement
+
+Static variables are stored in the **data segment** (not stack or heap).
+
+| Variable Type        | Storage      | Lifetime               | Scope          |
+| -------------------- | ------------ | ---------------------- | -------------- |
+| Auto (default local) | Stack        | Until function returns | Function       |
+| Static local         | Data segment | Entire program         | Function       |
+| Static global        | Data segment | Entire program         | File           |
+| Global (non-static)  | Data segment | Entire program         | Entire program |
+
+---
+
+## 🧰 7️⃣ Use Cases
+
+✅ **Static local variables**
+
+- To keep track of state across function calls.
+- For counters, caching, etc.
+
+✅ **Static global variables**
+
+- To hide internal data from other files (encapsulation).
+
+✅ **Static functions**
+
+- To make helper/utility functions private to a module.
+
+---
+
+## ⚠️ 8️⃣ Common Pitfalls
+
+❌ Using static variables in recursive functions → keeps old state unexpectedly.
+❌ Overusing static → reduces modularity and testability.
+❌ Forgetting `static` on helper functions → may cause name conflicts between files.
+
+---
+
+## 🧭 9️⃣ Quick Summary Table
+
+| Where declared   | Lifetime         | Scope         | Default Value | Example                |
+| ---------------- | ---------------- | ------------- | ------------- | ---------------------- |
+| Inside function  | Program lifetime | Function only | 0             | `static int count;`    |
+| Outside function | Program lifetime | File only     | 0             | `static int total;`    |
+| Static function  | N/A              | File only     | N/A           | `static void helper()` |
+
+---
+
+If you’d like, I can also show **a visual memory layout diagram** of where static variables live (stack vs heap vs data segment).
+Would you like that?
 
 ---
 
@@ -4113,6 +4350,36 @@ int main() {
     struct Student topper = findTopper(students, 3);
     printf("\nTopper: ");
     displayStudent(topper);
+
+    return 0;
+}
+```
+
+```c
+#include <stdio.h>
+
+struct Student {
+    int roll_no;
+    char name[50];
+    float marks;
+};
+
+void readStudents(struct Student *s, int count) {
+    for (int i = 0; i < count; i++) {
+        printf("\nEnter details for student %d:\n", i + 1);
+        printf("Enter Roll No: ");
+        scanf("%d", &s[i].roll_no);
+        printf("Enter Name: ");
+        scanf("%s", s[i].name);
+        printf("Enter Marks: ");
+        scanf("%f", &s[i].marks);
+    }
+}
+
+int main() {
+    struct Student students[3];
+
+    readStudents(students, 3);
 
     return 0;
 }
