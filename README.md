@@ -2,6 +2,13 @@
 
 ## Course Duration: 19 Hours
 
+## Table of Contents
+
+1. [User-Defined Functions](#user-defined-functions)
+2. [Arrays and Strings](#arrays-and-strings)
+3. [Structures](#structures)
+4. [Structures](#pointers)
+
 ---
 
 ## Module 1: Overview of Computer Software & Programming Languages (3 hours)
@@ -2577,3 +2584,3431 @@ int main() {
 4. Create a program to print various patterns using nested loops
 5. Write a program to find GCD and LCM of two numbers
 6. Create a program to check if a number is perfect, palindrome, or Armstrong
+
+# C Programming - Complete Notes
+
+## User-Defined Functions, Arrays, Strings
+
+---
+
+## User-Defined Functions
+
+### Introduction to Functions
+
+A **function** is a self-contained block of code that performs a specific task. Functions help in:
+
+- **Modularity**: Breaking down complex problems into smaller, manageable parts
+- **Reusability**: Writing code once and using it multiple times
+- **Maintainability**: Making code easier to debug and update
+- **Abstraction**: Hiding implementation details
+
+**Types of Functions:**
+
+1. **Library Functions**: Pre-defined functions (e.g., `printf()`, `scanf()`, `strlen()`)
+2. **User-Defined Functions**: Functions created by programmers
+
+### Function Definition and Return Statement
+
+**Syntax:**
+
+```c
+return_type function_name(parameter_list) {
+    // Function body
+    // Statements
+    return value; // Optional, depends on return_type
+}
+```
+
+**Components:**
+
+- **return_type**: Data type of the value returned (int, float, char, void)
+- **function_name**: Identifier for the function
+- **parameter_list**: Input values (can be empty)
+- **Function body**: Code to be executed
+- **return statement**: Returns control to the calling function
+
+**Example 1: Simple Function**
+
+```c
+int add(int a, int b) {
+    int sum = a + b;
+    return sum;
+}
+```
+
+**Example 2: Function with No Return Value**
+
+```c
+void displayMessage() {
+    printf("Welcome to C Programming!\n");
+    // No return statement needed for void
+}
+```
+
+**Example 3: Function with No Parameters**
+
+```c
+int getRandomNumber() {
+    return 42;
+}
+```
+
+**Return Statement Rules:**
+
+- A function can have multiple return statements
+- Once a return is executed, function terminates immediately
+- void functions don't require return, but can use `return;` to exit early
+- Return value must match the declared return_type
+
+### Function Prototypes
+
+A **function prototype** (also called function declaration) tells the compiler about:
+
+- Function name
+- Return type
+- Number and types of parameters
+
+**Syntax:**
+
+```c
+return_type function_name(parameter_types);
+```
+
+**Why Use Prototypes?**
+
+- Allows calling functions before they are defined
+- Enables type checking by the compiler
+- Improves code organization
+- Required when function is defined in another file
+
+**Example:**
+
+```c
+#include <stdio.h>
+
+// Function prototypes
+int multiply(int, int);
+void greet(void);
+float calculateArea(float);
+
+int main() {
+    int result = multiply(5, 3);
+    printf("Result: %d\n", result);
+    greet();
+    printf("Area: %.2f\n", calculateArea(5.5));
+    return 0;
+}
+
+// Function definitions
+int multiply(int x, int y) {
+    return x * y;
+}
+
+void greet() {
+    printf("Hello, User!\n");
+}
+
+float calculateArea(float radius) {
+    return 3.14159 * radius * radius;
+}
+```
+
+**Parameter Names in Prototypes:**
+
+```c
+// Both are valid
+int add(int a, int b);    // With parameter names
+int add(int, int);        // Without parameter names (preferred in prototypes)
+```
+
+### Function Invocation
+
+**Function Call Syntax:**
+
+```c
+function_name(arguments);
+```
+
+**Example:**
+
+```c
+#include <stdio.h>
+
+int square(int n) {
+    return n * n;
+}
+
+int main() {
+    int num = 5;
+    int result = square(num);  // Function invocation
+    printf("Square of %d is %d\n", num, result);
+    return 0;
+}
+```
+
+**Types of Function Calls:**
+
+1. **Call by value**
+2. **Call by reference**
+
+### Call by Value
+
+In **call by value**, a copy of the actual parameter is passed to the function. Changes made to parameters inside the function do not affect the original variables.
+
+**Characteristics:**
+
+- Original values remain unchanged
+- Function works with copies
+- Safe but may be inefficient for large data
+
+**Example:**
+
+```c
+#include <stdio.h>
+
+void modify(int x) {
+    x = 100;
+    printf("Inside function: x = %d\n", x);
+}
+
+int main() {
+    int num = 10;
+    printf("Before function call: num = %d\n", num);
+    modify(num);
+    printf("After function call: num = %d\n", num);
+    return 0;
+}
+
+/* Output:
+Before function call: num = 10
+Inside function: x = 100
+After function call: num = 10
+*/
+```
+
+### Call by Reference
+
+In **call by reference**, the address of the actual parameter is passed using pointers. Changes made inside the function affect the original variables.
+
+**Characteristics:**
+
+- Original values can be modified
+- Uses pointer notation
+- Memory efficient for large data
+- Allows multiple return values through parameters
+
+**Example:**
+
+```c
+#include <stdio.h>
+
+void swap(int *x, int *y) {
+    int temp = *x;
+    *x = *y;
+    *y = temp;
+}
+
+int main() {
+    int a = 5, b = 10;
+    printf("Before swap: a = %d, b = %d\n", a, b);
+    swap(&a, &b);  // Passing addresses
+    printf("After swap: a = %d, b = %d\n", a, b);
+    return 0;
+}
+
+/* Output:
+Before swap: a = 5, b = 10
+After swap: a = 10, b = 5
+*/
+```
+
+**Call by Value vs Call by Reference:**
+
+| Aspect                  | Call by Value         | Call by Reference    |
+| ----------------------- | --------------------- | -------------------- |
+| What is passed          | Copy of value         | Address of variable  |
+| Changes affect original | No                    | Yes                  |
+| Memory usage            | More (creates copies) | Less (uses pointers) |
+| Syntax                  | `func(x)`             | `func(&x)`           |
+| Function parameter      | `void func(int x)`    | `void func(int *x)`  |
+
+### Recursive Functions
+
+**Recursion** is a technique where a function calls itself directly or indirectly to solve a problem.
+
+**Components of Recursion:**
+
+1. **Base Case**: Condition to stop recursion
+2. **Recursive Case**: Function calls itself with modified parameters
+
+**Example 1: Factorial**
+
+```c
+#include <stdio.h>
+
+int factorial(int n) {
+    // Base case
+    if (n == 0 || n == 1) {
+        return 1;
+    }
+    // Recursive case
+    return n * factorial(n - 1);
+}
+
+int main() {
+    int num = 5;
+    printf("Factorial of %d is %d\n", num, factorial(num));
+    return 0;
+}
+
+/* Execution trace for factorial(5):
+factorial(5) = 5 * factorial(4)
+factorial(4) = 4 * factorial(3)
+factorial(3) = 3 * factorial(2)
+factorial(2) = 2 * factorial(1)
+factorial(1) = 1 (base case)
+Result: 5 * 4 * 3 * 2 * 1 = 120
+*/
+```
+
+**Example 2: Fibonacci Series**
+
+```c
+#include <stdio.h>
+
+int fibonacci(int n) {
+    if (n == 0) return 0;
+    if (n == 1) return 1;
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+int main() {
+    int terms = 10;
+    printf("Fibonacci series: ");
+    for (int i = 0; i < terms; i++) {
+        printf("%d ", fibonacci(i));
+    }
+    return 0;
+}
+```
+
+**Example 3: Sum of Natural Numbers**
+
+```c
+#include <stdio.h>
+
+int sum(int n) {
+    if (n == 0) return 0;
+    return n + sum(n - 1);
+}
+
+int main() {
+    printf("Sum of 1 to 10: %d\n", sum(10));
+    return 0;
+}
+```
+
+**Recursion vs Iteration:**
+
+| Aspect      | Recursion                        | Iteration        |
+| ----------- | -------------------------------- | ---------------- |
+| Readability | More intuitive for some problems | Can be verbose   |
+| Memory      | Uses stack memory                | Uses less memory |
+| Speed       | Generally slower                 | Generally faster |
+| Termination | Base case required               | Loop condition   |
+
+**Important Notes:**
+
+- Always define a proper base case to avoid infinite recursion
+- Recursion uses stack memory; too many calls can cause stack overflow
+- Some problems are naturally recursive (tree traversal, divide and conquer)
+
+---
+
+## Arrays and Strings
+
+### Defining an Array
+
+An **array** is a collection of elements of the same data type stored in contiguous memory locations.
+
+**Syntax:**
+
+```c
+data_type array_name[size];
+```
+
+**Characteristics:**
+
+- Fixed size (defined at compile time)
+- Elements accessed using index (0 to size-1)
+- Stored in contiguous memory
+- All elements must be of same type
+
+**Array Declaration Examples:**
+
+```c
+int numbers[5];           // Array of 5 integers
+float prices[10];         // Array of 10 floats
+char name[20];            // Array of 20 characters
+```
+
+**Array Initialization:**
+
+```c
+// Method 1: During declaration
+int arr[5] = {10, 20, 30, 40, 50};
+
+// Method 2: Partial initialization (remaining elements = 0)
+int arr[5] = {10, 20};  // arr = {10, 20, 0, 0, 0}
+
+// Method 3: Without specifying size
+int arr[] = {1, 2, 3, 4, 5};  // Size automatically = 5
+
+// Method 4: After declaration
+int arr[3];
+arr[0] = 10;
+arr[1] = 20;
+arr[2] = 30;
+```
+
+**Memory Layout:**
+
+```
+If: int arr[5] = {10, 20, 30, 40, 50};
+Memory: [10][20][30][40][50]
+Index:   0   1   2   3   4
+Address: 1000 1004 1008 1012 1016 (assuming 4 bytes per int)
+```
+
+### One Dimensional Arrays
+
+A **one-dimensional array** is a linear collection of elements.
+
+**Example 1: Basic Operations**
+
+```c
+#include <stdio.h>
+
+int main() {
+    int marks[5] = {85, 90, 78, 92, 88};
+
+    // Accessing elements
+    printf("First student marks: %d\n", marks[0]);
+    printf("Last student marks: %d\n", marks[4]);
+
+    // Modifying elements
+    marks[2] = 80;
+
+    // Traversing array
+    printf("All marks: ");
+    for (int i = 0; i < 5; i++) {
+        printf("%d ", marks[i]);
+    }
+
+    return 0;
+}
+```
+
+**Example 2: Finding Maximum Element**
+
+```c
+#include <stdio.h>
+
+int main() {
+    int arr[] = {45, 23, 78, 12, 90, 56};
+    int size = sizeof(arr) / sizeof(arr[0]);
+    int max = arr[0];
+
+    for (int i = 1; i < size; i++) {
+        if (arr[i] > max) {
+            max = arr[i];
+        }
+    }
+
+    printf("Maximum element: %d\n", max);
+    return 0;
+}
+```
+
+**Example 3: Array Input from User**
+
+```c
+#include <stdio.h>
+
+int main() {
+    int n, sum = 0;
+
+    printf("Enter number of elements: ");
+    scanf("%d", &n);
+
+    int arr[n];  // Variable-length array (C99 feature)
+
+    printf("Enter %d elements:\n", n);
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &arr[i]);
+        sum += arr[i];
+    }
+
+    printf("Sum: %d\n", sum);
+    printf("Average: %.2f\n", (float)sum / n);
+
+    return 0;
+}
+```
+
+**Example 4: Reversing an Array**
+
+```c
+#include <stdio.h>
+
+int main() {
+    int arr[] = {1, 2, 3, 4, 5};
+    int size = 5;
+
+    printf("Original array: ");
+    for (int i = 0; i < size; i++) {
+        printf("%d ", arr[i]);
+    }
+
+    // Reverse using two pointers
+    for (int i = 0; i < size / 2; i++) {
+        int temp = arr[i];
+        arr[i] = arr[size - 1 - i];
+        arr[size - 1 - i] = temp;
+    }
+
+    printf("\nReversed array: ");
+    for (int i = 0; i < size; i++) {
+        printf("%d ", arr[i]);
+    }
+
+    return 0;
+}
+```
+
+### Multi-dimensional Arrays
+
+**Multi-dimensional arrays** are arrays of arrays, commonly used for matrices and tables.
+
+**Two-Dimensional Array Syntax:**
+
+```c
+data_type array_name[rows][columns];
+```
+
+**Declaration and Initialization:**
+
+```c
+// Method 1: With initialization
+int matrix[3][3] = {
+    {1, 2, 3},
+    {4, 5, 6},
+    {7, 8, 9}
+};
+
+// Method 2: Linear initialization
+int matrix[3][3] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+// Method 3: Partial initialization
+int matrix[3][3] = {{1, 2}, {4}};  // Remaining = 0
+```
+
+**Memory Representation:**
+
+```
+matrix[2][3] stored as: [0][0] [0][1] [0][2] [1][0] [1][1] [1][2]
+```
+
+**Example 1: Matrix Input and Display**
+
+```c
+#include <stdio.h>
+
+int main() {
+    int rows, cols;
+
+    printf("Enter rows and columns: ");
+    scanf("%d %d", &rows, &cols);
+
+    int matrix[rows][cols];
+
+    // Input
+    printf("Enter matrix elements:\n");
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            scanf("%d", &matrix[i][j]);
+        }
+    }
+
+    // Display
+    printf("Matrix:\n");
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            printf("%d ", matrix[i][j]);
+        }
+        printf("\n");
+    }
+
+    return 0;
+}
+```
+
+**Example 2: Matrix Addition**
+
+```c
+#include <stdio.h>
+
+int main() {
+    int a[2][2] = {{1, 2}, {3, 4}};
+    int b[2][2] = {{5, 6}, {7, 8}};
+    int sum[2][2];
+
+    // Addition
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 2; j++) {
+            sum[i][j] = a[i][j] + b[i][j];
+        }
+    }
+
+    // Display result
+    printf("Sum Matrix:\n");
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 2; j++) {
+            printf("%d ", sum[i][j]);
+        }
+        printf("\n");
+    }
+
+    return 0;
+}
+```
+
+**Example 3: Matrix Multiplication**
+
+```c
+#include <stdio.h>
+
+int main() {
+    int a[2][2] = {{1, 2}, {3, 4}};
+    int b[2][2] = {{5, 6}, {7, 8}};
+    int product[2][2] = {0};
+
+    // Multiplication
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 2; j++) {
+            for (int k = 0; k < 2; k++) {
+                product[i][j] += a[i][k] * b[k][j];
+            }
+        }
+    }
+
+    printf("Product Matrix:\n");
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 2; j++) {
+            printf("%d ", product[i][j]);
+        }
+        printf("\n");
+    }
+
+    return 0;
+}
+```
+
+**Example 4: Transpose of Matrix**
+
+```c
+#include <stdio.h>
+
+int main() {
+    int matrix[3][2] = {{1, 2}, {3, 4}, {5, 6}};
+    int transpose[2][3];
+
+    // Finding transpose
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 2; j++) {
+            transpose[j][i] = matrix[i][j];
+        }
+    }
+
+    printf("Original Matrix:\n");
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 2; j++) {
+            printf("%d ", matrix[i][j]);
+        }
+        printf("\n");
+    }
+
+    printf("Transpose:\n");
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 3; j++) {
+            printf("%d ", transpose[i][j]);
+        }
+        printf("\n");
+    }
+
+    return 0;
+}
+```
+
+### Strings and String Manipulation
+
+A **string** in C is an array of characters terminated by a null character `'\0'`.
+
+**String Declaration:**
+
+```c
+// Method 1: Character array
+char str[20];
+
+// Method 2: With initialization
+char str[] = "Hello";  // Size = 6 (including '\0')
+
+// Method 3: Character by character
+char str[] = {'H', 'e', 'l', 'l', 'o', '\0'};
+
+// Method 4: String pointer
+char *str = "Hello";  // String literal
+```
+
+**String Representation:**
+
+```
+String "Hello" in memory:
+['H']['e']['l']['l']['o']['\0']
+  0    1    2    3    4    5
+```
+
+**Example 1: String Input/Output**
+
+```c
+#include <stdio.h>
+
+int main() {
+    char name[50];
+
+    // Method 1: Using scanf (stops at whitespace)
+    printf("Enter name: ");
+    scanf("%s", name);  // No & needed for arrays
+    printf("Name: %s\n", name);
+
+    // Method 2: Using gets (deprecated, reads whole line)
+    // gets(name);  // Unsafe, avoid using
+
+    // Method 3: Using fgets (safe, reads whole line)
+    printf("Enter full name: ");
+    fgets(name, 50, stdin);
+    printf("Full name: %s", name);
+
+    return 0;
+}
+```
+
+**Standard String Functions (string.h):**
+
+**1. strlen() - String Length**
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char str[] = "Programming";
+    int length = strlen(str);
+    printf("Length: %d\n", length);  // Output: 11
+    return 0;
+}
+```
+
+**2. strcpy() - String Copy**
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char source[] = "Hello";
+    char destination[20];
+
+    strcpy(destination, source);
+    printf("Destination: %s\n", destination);
+    return 0;
+}
+```
+
+**3. strcat() - String Concatenation**
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char str1[50] = "Hello ";
+    char str2[] = "World";
+
+    strcat(str1, str2);
+    printf("Result: %s\n", str1);  // Output: Hello World
+    return 0;
+}
+```
+
+**4. strcmp() - String Comparison**
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char str1[] = "Apple";
+    char str2[] = "Banana";
+
+    int result = strcmp(str1, str2);
+
+    if (result == 0)
+        printf("Strings are equal\n");
+    else if (result < 0)
+        printf("str1 is less than str2\n");
+    else
+        printf("str1 is greater than str2\n");
+
+    return 0;
+}
+```
+
+**Custom String Functions:**
+
+**Example 1: String Length (Manual)**
+
+```c
+#include <stdio.h>
+
+int stringLength(char str[]) {
+    int length = 0;
+    while (str[length] != '\0') {
+        length++;
+    }
+    return length;
+}
+
+int main() {
+    char str[] = "Hello";
+    printf("Length: %d\n", stringLength(str));
+    return 0;
+}
+```
+
+**Example 2: String Copy (Manual)**
+
+```c
+#include <stdio.h>
+
+void stringCopy(char dest[], char src[]) {
+    int i = 0;
+    while (src[i] != '\0') {
+        dest[i] = src[i];
+        i++;
+    }
+    dest[i] = '\0';
+}
+
+int main() {
+    char source[] = "Programming";
+    char destination[20];
+    stringCopy(destination, source);
+    printf("Copied string: %s\n", destination);
+    return 0;
+}
+```
+
+**Example 3: String Reverse**
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+void reverseString(char str[]) {
+    int length = strlen(str);
+    for (int i = 0; i < length / 2; i++) {
+        char temp = str[i];
+        str[i] = str[length - 1 - i];
+        str[length - 1 - i] = temp;
+    }
+}
+
+int main() {
+    char str[] = "Hello";
+    printf("Original: %s\n", str);
+    reverseString(str);
+    printf("Reversed: %s\n", str);
+    return 0;
+}
+```
+
+**Example 4: Check Palindrome**
+
+```c
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int isPalindrome(char str[]) {
+    int left = 0;
+    int right = strlen(str) - 1;
+
+    while (left < right) {
+        if (tolower(str[left]) != tolower(str[right])) {
+            return 0;  // Not a palindrome
+        }
+        left++;
+        right--;
+    }
+    return 1;  // Is a palindrome
+}
+
+int main() {
+    char str[] = "Madam";
+    if (isPalindrome(str))
+        printf("%s is a palindrome\n", str);
+    else
+        printf("%s is not a palindrome\n", str);
+    return 0;
+}
+```
+
+**Example 5: Count Vowels and Consonants**
+
+```c
+#include <stdio.h>
+#include <ctype.h>
+
+void countLetters(char str[]) {
+    int vowels = 0, consonants = 0;
+
+    for (int i = 0; str[i] != '\0'; i++) {
+        char ch = tolower(str[i]);
+        if (ch >= 'a' && ch <= 'z') {
+            if (ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u')
+                vowels++;
+            else
+                consonants++;
+        }
+    }
+
+    printf("Vowels: %d\n", vowels);
+    printf("Consonants: %d\n", consonants);
+}
+
+int main() {
+    char str[] = "Hello World";
+    countLetters(str);
+    return 0;
+}
+```
+
+### Passing Array and String to Function
+
+Arrays and strings are passed to functions by reference (address is passed).
+
+**Passing 1D Array:**
+
+```c
+#include <stdio.h>
+
+// Method 1: Unsized array
+void display(int arr[], int size) {
+    for (int i = 0; i < size; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+}
+
+// Method 2: Pointer notation
+void modify(int *arr, int size) {
+    for (int i = 0; i < size; i++) {
+        arr[i] *= 2;
+    }
+}
+
+int main() {
+    int numbers[] = {1, 2, 3, 4, 5};
+    int size = 5;
+
+    printf("Original: ");
+    display(numbers, size);
+
+    modify(numbers, size);
+
+    printf("Modified: ");
+    display(numbers, size);
+
+    return 0;
+}
+```
+
+**Passing 2D Array:**
+
+```c
+#include <stdio.h>
+
+// Must specify column size
+void displayMatrix(int mat[][3], int rows) {
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < 3; j++) {
+            printf("%d ", mat[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+int main() {
+    int matrix[2][3] = {{1, 2, 3}, {4, 5, 6}};
+    displayMatrix(matrix, 2);
+    return 0;
+}
+```
+
+**Passing Strings:**
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+// Method 1: Character array
+void printString(char str[]) {
+    printf("String: %s\n", str);
+}
+
+// Method 2: Pointer
+void toUpperCase(char *str) {
+    for (int i = 0; str[i] != '\0'; i++) {
+        if (str[i] >= 'a' && str[i] <= 'z') {
+            str[i] = str[i] - 32;
+        }
+    }
+}
+
+int main() {
+    char text[] = "hello world";
+    printString(text);
+    toUpperCase(text);
+    printString(text);
+    return 0;
+}
+```
+
+**Return Array from Function:**
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+// Using static array (not recommended for large data)
+int* getArray1() {
+    static int arr[] = {1, 2, 3, 4, 5};
+    return arr;
+}
+
+// Using dynamic allocation (recommended)
+int* getArray2(int size) {
+    int *arr = (int*)malloc(size * sizeof(int));
+    for (int i = 0; i < size; i++) {
+        arr[i] = i + 1;
+    }
+    return arr;
+}
+
+int main() {
+    int *arr1 = getArray1();
+    for (int i = 0; i < 5; i++) {
+        printf("%d ", arr1[i]);
+    }
+    printf("\n");
+
+    int *arr2 = getArray2(5);
+    for (int i = 0; i < 5; i++) {
+        printf("%d ", arr2[i]);
+    }
+    free(arr2);  // Don't forget to free memory
+
+    return 0;
+}
+```
+
+**Important Notes:**
+
+- Arrays are always passed by reference
+- Changes inside function affect original array
+- Array size should be passed separately
+- For 2D arrays, column size must be specified
+- Strings are character arrays, so same rules apply
+
+---
+
+## Structures
+
+### Introduction to Structures
+
+A **structure** is a user-defined data type in C that allows you to group variables of different data types under a single name. Structures are used to represent records and organize complex data.
+
+**Syntax:**
+
+```c
+struct structure_name {
+    data_type member1;
+    data_type member2;
+    // ... more members
+};
+```
+
+**Example:**
+
+```c
+struct Student {
+    int roll_no;
+    char name[50];
+    float marks;
+};
+```
+
+**Declaring Structure Variables:**
+
+```c
+// Method 1: After structure definition
+struct Student s1, s2;
+
+// Method 2: During structure definition
+struct Student {
+    int roll_no;
+    char name[50];
+    float marks;
+} s1, s2;
+
+// Method 3: Using typedef
+typedef struct {
+    int roll_no;
+    char name[50];
+    float marks;
+} Student;
+
+Student s1, s2;  // No need for 'struct' keyword
+```
+
+**Accessing Structure Members:**
+Use the dot (`.`) operator to access structure members.
+
+```c
+struct Student s1;
+s1.roll_no = 101;
+strcpy(s1.name, "John");
+s1.marks = 85.5;
+
+printf("Roll No: %d\n", s1.roll_no);
+printf("Name: %s\n", s1.name);
+printf("Marks: %.2f\n", s1.marks);
+```
+
+### Processing a Structure
+
+**Initialization:**
+
+```c
+// Method 1: Member by member
+struct Student s1;
+s1.roll_no = 101;
+strcpy(s1.name, "Alice");
+s1.marks = 92.5;
+
+// Method 2: During declaration
+struct Student s2 = {102, "Bob", 88.0};
+
+// Method 3: Designated initializers (C99)
+struct Student s3 = {
+    .roll_no = 103,
+    .name = "Charlie",
+    .marks = 95.5
+};
+```
+
+**Reading and Displaying Structure Data:**
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+struct Student {
+    int roll_no;
+    char name[50];
+    float marks;
+};
+
+int main() {
+    struct Student s1;
+
+    // Reading data
+    printf("Enter Roll No: ");
+    scanf("%d", &s1.roll_no);
+    printf("Enter Name: ");
+    scanf("%s", s1.name);  // Note: no & for arrays
+    printf("Enter Marks: ");
+    scanf("%f", &s1.marks);
+
+    // Displaying data
+    printf("\nStudent Details:\n");
+    printf("Roll No: %d\n", s1.roll_no);
+    printf("Name: %s\n", s1.name);
+    printf("Marks: %.2f\n", s1.marks);
+
+    return 0;
+}
+```
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+struct Student {
+    int id;
+    char name[50];
+    int age;
+    float gpa;
+};
+
+void inputStudent(struct Student *s) {
+    printf("Enter ID: ");
+    scanf("%d", &s->id);
+    printf("Enter name: ");
+    scanf(" %[^\n]", s->name);  // Read string with spaces
+    printf("Enter age: ");
+    scanf("%d", &s->age);
+    printf("Enter GPA: ");
+    scanf("%f", &s->gpa);
+}
+
+void displayStudent(struct Student s) {
+    printf("\n--- Student Details ---\n");
+    printf("ID: %d\n", s.id);
+    printf("Name: %s\n", s.name);
+    printf("Age: %d\n", s.age);
+    printf("GPA: %.2f\n", s.gpa);
+}
+
+int main() {
+    struct Student s1;
+
+    inputStudent(&s1);
+    displayStudent(s1);
+
+    return 0
+}
+```
+
+**Copying Structures:**
+
+```c
+struct Student s1 = {101, "Alice", 92.5};
+struct Student s2;
+
+// Direct assignment (copies all members)
+s2 = s1;
+```
+
+**Comparing Structures:**
+Structures cannot be compared directly using `==`. You must compare members individually.
+
+```c
+if (s1.roll_no == s2.roll_no &&
+    strcmp(s1.name, s2.name) == 0 &&
+    s1.marks == s2.marks) {
+    printf("Structures are equal\n");
+}
+```
+
+### Arrays of Structures
+
+An array of structures is used to store multiple records of the same type.
+
+**Declaration:**
+
+```c
+struct Student students[50];  // Array of 50 students
+```
+
+**Example: Complete Program**
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+struct Student {
+    int roll_no;
+    char name[50];
+    float marks;
+};
+
+int main() {
+    struct Student students[3];
+    int i;
+
+    // Reading data for multiple students
+    for (i = 0; i < 3; i++) {
+        printf("\nEnter details for student %d:\n", i + 1);
+        printf("Roll No: ");
+        scanf("%d", &students[i].roll_no);
+        printf("Name: ");
+        scanf("%s", students[i].name);
+        printf("Marks: ");
+        scanf("%f", &students[i].marks);
+    }
+
+    // Displaying all students
+    printf("\n\nStudent Records:\n");
+    printf("%-10s %-20s %-10s\n", "Roll No", "Name", "Marks");
+    printf("----------------------------------------\n");
+    for (i = 0; i < 3; i++) {
+        printf("%-10d %-20s %-10.2f\n",
+               students[i].roll_no,
+               students[i].name,
+               students[i].marks);
+    }
+
+    // Finding student with highest marks
+    int max_index = 0;
+    for (i = 1; i < 3; i++) {
+        if (students[i].marks > students[max_index].marks) {
+            max_index = i;
+        }
+    }
+
+    printf("\nTopper: %s with %.2f marks\n",
+           students[max_index].name,
+           students[max_index].marks);
+
+    return 0;
+}
+```
+
+### Arrays within Structures
+
+Structures can contain arrays as members, allowing you to store multiple values of the same type within a single structure.
+
+**Example:**
+
+```c
+struct Employee {
+    int emp_id;
+    char name[50];
+    int daily_hours[7];  // Hours worked for 7 days
+    char skills[5][30];  // Up to 5 skills, each 30 chars
+};
+
+int main() {
+    struct Employee emp;
+
+    emp.emp_id = 501;
+    strcpy(emp.name, "David");
+
+    // Setting daily hours
+    int hours[] = {8, 7, 9, 8, 8, 0, 0};
+    for (int i = 0; i < 7; i++) {
+        emp.daily_hours[i] = hours[i];
+    }
+
+    // Setting skills
+    strcpy(emp.skills[0], "C Programming");
+    strcpy(emp.skills[1], "Python");
+    strcpy(emp.skills[2], "Data Structures");
+
+    // Calculating total hours
+    int total = 0;
+    for (int i = 0; i < 7; i++) {
+        total += emp.daily_hours[i];
+    }
+
+    printf("Employee: %s\n", emp.name);
+    printf("Total hours: %d\n", total);
+    printf("Skills:\n");
+    for (int i = 0; i < 3; i++) {
+        printf("  - %s\n", emp.skills[i]);
+    }
+
+    return 0;
+}
+```
+
+**Nested Structures:**
+
+```c
+struct Date {
+    int day;
+    int month;
+    int year;
+};
+
+struct Employee {
+    int emp_id;
+    char name[50];
+    struct Date joining_date;  // Nested structure
+    struct Date birth_date;
+};
+
+int main() {
+    struct Employee emp;
+
+    emp.emp_id = 101;
+    strcpy(emp.name, "Alice");
+
+    // Accessing nested structure members
+    emp.joining_date.day = 15;
+    emp.joining_date.month = 6;
+    emp.joining_date.year = 2020;
+
+    printf("Joining Date: %d/%d/%d\n",
+           emp.joining_date.day,
+           emp.joining_date.month,
+           emp.joining_date.year);
+
+    return 0;
+}
+```
+
+### Structures and Functions
+
+Structures can be passed to functions and returned from functions in three ways:
+
+#### 1. Pass by Value
+
+The entire structure is copied to the function. Changes inside the function don't affect the original structure.
+
+```c
+#include <stdio.h>
+
+struct Point {
+    int x;
+    int y;
+};
+
+// Function that takes structure by value
+void displayPoint(struct Point p) {
+    printf("Point: (%d, %d)\n", p.x, p.y);
+}
+
+// Function that modifies structure (doesn't affect original)
+void modifyPoint(struct Point p) {
+    p.x = 100;
+    p.y = 200;
+}
+
+int main() {
+    struct Point p1 = {10, 20};
+
+    displayPoint(p1);       // Output: Point: (10, 20)
+    modifyPoint(p1);
+    displayPoint(p1);       // Output: Point: (10, 20) - unchanged
+
+    return 0;
+}
+```
+
+#### 2. Pass by Reference (Using Pointers)
+
+A pointer to the structure is passed. Changes inside the function affect the original structure.
+
+```c
+// Function that takes structure pointer
+void modifyPoint(struct Point *p) {
+    p->x = 100;  // Arrow operator for pointer to structure
+    p->y = 200;
+}
+
+int main() {
+    struct Point p1 = {10, 20};
+
+    printf("Before: (%d, %d)\n", p1.x, p1.y);
+    modifyPoint(&p1);  // Pass address
+    printf("After: (%d, %d)\n", p1.x, p1.y);
+
+    return 0;
+}
+```
+
+#### 3. Returning Structures from Functions
+
+```c
+struct Point createPoint(int x, int y) {
+    struct Point p;
+    p.x = x;
+    p.y = y;
+    return p;
+}
+
+struct Point addPoints(struct Point p1, struct Point p2) {
+    struct Point result;
+    result.x = p1.x + p2.x;
+    result.y = p1.y + p2.y;
+    return result;
+}
+
+int main() {
+    struct Point p1 = createPoint(10, 20);
+    struct Point p2 = createPoint(30, 40);
+    struct Point sum = addPoints(p1, p2);
+
+    printf("Sum: (%d, %d)\n", sum.x, sum.y);  // Output: Sum: (40, 60)
+
+    return 0;
+}
+```
+
+**Complete Example: Student Management**
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+struct Student {
+    int roll_no;
+    char name[50];
+    float marks;
+};
+
+// Function to read student data
+void readStudent(struct Student *s) {
+    printf("Enter Roll No: ");
+    scanf("%d", &s->roll_no);
+    printf("Enter Name: ");
+    scanf("%s", s->name);
+    printf("Enter Marks: ");
+    scanf("%f", &s->marks);
+}
+
+// Function to display student data
+void displayStudent(struct Student s) {
+    printf("Roll No: %d, Name: %s, Marks: %.2f\n",
+           s.roll_no, s.name, s.marks);
+}
+
+// Function to find student with highest marks
+struct Student findTopper(struct Student students[], int n) {
+    int max_index = 0;
+    for (int i = 1; i < n; i++) {
+        if (students[i].marks > students[max_index].marks) {
+            max_index = i;
+        }
+    }
+    return students[max_index];
+}
+
+int main() {
+    struct Student students[3];
+
+    for (int i = 0; i < 3; i++) {
+        printf("\nEnter details for student %d:\n", i + 1);
+        readStudent(&students[i]);
+    }
+
+    printf("\nAll Students:\n");
+    for (int i = 0; i < 3; i++) {
+        displayStudent(students[i]);
+    }
+
+    struct Student topper = findTopper(students, 3);
+    printf("\nTopper: ");
+    displayStudent(topper);
+
+    return 0;
+}
+```
+
+---
+
+## Pointers
+
+### Introduction to Pointers
+
+A **pointer** is a variable that stores the memory address of another variable. Pointers are one of the most powerful features of C programming.
+
+**Why Use Pointers?**
+
+- Dynamic memory allocation
+- Efficient array and string handling
+- Pass by reference to functions
+- Implement complex data structures (linked lists, trees, etc.)
+- Direct hardware manipulation
+
+**Memory Concepts:**
+
+- Every variable is stored at a specific memory address
+- Memory addresses are typically represented in hexadecimal
+- The size of a pointer depends on the system architecture (4 bytes for 32-bit, 8 bytes for 64-bit)
+
+### Pointer Declaration
+
+**Syntax:**
+
+```c
+data_type *pointer_name;
+```
+
+**Examples:**
+
+```c
+int *ptr;        // Pointer to integer
+float *fptr;     // Pointer to float
+char *cptr;      // Pointer to character
+double *dptr;    // Pointer to double
+```
+
+**Address Operator (`&`):**
+Returns the memory address of a variable.
+
+```c
+int x = 10;
+printf("Value of x: %d\n", x);
+printf("Address of x: %p\n", &x);  // %p for pointer/address
+```
+
+**Dereference Operator (`*`):**
+Accesses the value stored at the memory address.
+
+```c
+int x = 10;
+int *ptr = &x;  // ptr stores address of x
+
+printf("Address stored in ptr: %p\n", ptr);
+printf("Value at address (using *ptr): %d\n", *ptr);
+```
+
+**Complete Example:**
+
+```c
+#include <stdio.h>
+
+int main() {
+    int x = 25;
+    int *ptr;
+
+    ptr = &x;  // Store address of x in ptr
+
+    printf("Value of x: %d\n", x);
+    printf("Address of x: %p\n", &x);
+    printf("Value of ptr (address it holds): %p\n", ptr);
+    printf("Value pointed to by ptr: %d\n", *ptr);
+    printf("Address of ptr itself: %p\n", &ptr);
+
+    // Modifying value through pointer
+    *ptr = 50;
+    printf("\nAfter *ptr = 50:\n");
+    printf("Value of x: %d\n", x);  // x is now 50
+
+    return 0;
+}
+```
+
+**Pointer Initialization:**
+
+```c
+int x = 10;
+int *ptr1 = &x;      // Initialize during declaration
+int *ptr2;
+ptr2 = &x;           // Initialize separately
+
+int *ptr3 = NULL;    // Initialize to NULL (good practice)
+```
+
+**NULL Pointer:**
+A pointer that doesn't point to any valid memory location.
+
+```c
+int *ptr = NULL;
+
+if (ptr == NULL) {
+    printf("Pointer is NULL\n");
+}
+
+// Always check before dereferencing
+if (ptr != NULL) {
+    printf("Value: %d\n", *ptr);
+}
+```
+
+### Pointer Arithmetic
+
+Pointers can be incremented, decremented, and used in arithmetic operations. When you add or subtract from a pointer, it moves by the size of the data type it points to.
+
+**Operations Allowed:**
+
+1. Increment (`++`) and Decrement (`--`)
+2. Addition (`+`) and Subtraction (`-`) with integers
+3. Subtraction between two pointers of the same type
+4. Comparison (`==`, `!=`, `<`, `>`, `<=`, `>=`)
+
+**Example:**
+
+```c
+#include <stdio.h>
+
+int main() {
+    int arr[] = {10, 20, 30, 40, 50};
+    int *ptr = arr;  // Points to first element
+
+    printf("Address of arr[0]: %p, Value: %d\n", ptr, *ptr);
+
+    ptr++;  // Move to next integer (4 bytes ahead on most systems)
+    printf("Address of arr[1]: %p, Value: %d\n", ptr, *ptr);
+
+    ptr += 2;  // Move 2 integers ahead
+    printf("Address of arr[3]: %p, Value: %d\n", ptr, *ptr);
+
+    ptr--;  // Move back
+    printf("Address of arr[2]: %p, Value: %d\n", ptr, *ptr);
+
+    return 0;
+}
+```
+
+**Size of Data Types:**
+
+```c
+int x;
+float f;
+char c;
+double d;
+
+printf("Size of int: %lu bytes\n", sizeof(int));
+printf("Size of float: %lu bytes\n", sizeof(float));
+printf("Size of char: %lu bytes\n", sizeof(char));
+printf("Size of double: %lu bytes\n", sizeof(double));
+
+int *iptr;
+float *fptr;
+printf("Size of int pointer: %lu bytes\n", sizeof(iptr));
+printf("Size of float pointer: %lu bytes\n", sizeof(fptr));
+```
+
+**Pointer Subtraction:**
+
+```c
+int arr[] = {10, 20, 30, 40, 50};
+int *ptr1 = &arr[1];
+int *ptr2 = &arr[4];
+
+int difference = ptr2 - ptr1;  // Number of elements between pointers
+printf("Difference: %d elements\n", difference);  // Output: 3
+```
+
+**Pointer Comparison:**
+
+```c
+int arr[] = {10, 20, 30, 40, 50};
+int *ptr1 = &arr[1];
+int *ptr2 = &arr[3];
+
+if (ptr1 < ptr2) {
+    printf("ptr1 comes before ptr2 in memory\n");
+}
+
+if (ptr1 == &arr[1]) {
+    printf("ptr1 points to arr[1]\n");
+}
+```
+
+### Pointer and Array
+
+Arrays and pointers are closely related in C. The name of an array is essentially a pointer to its first element.
+
+**Array-Pointer Relationship:**
+
+```c
+int arr[] = {10, 20, 30, 40, 50};
+int *ptr = arr;  // Same as: int *ptr = &arr[0];
+
+printf("arr: %p\n", arr);
+printf("&arr[0]: %p\n", &arr[0]);
+printf("ptr: %p\n", ptr);  // All three print the same address
+```
+
+**Accessing Array Elements:**
+
+```c
+int arr[] = {10, 20, 30, 40, 50};
+
+// Method 1: Array notation
+printf("%d\n", arr[2]);
+
+// Method 2: Pointer notation
+printf("%d\n", *(arr + 2));
+
+// Method 3: Using separate pointer
+int *ptr = arr;
+printf("%d\n", ptr[2]);
+printf("%d\n", *(ptr + 2));
+```
+
+**Equivalence:**
+
+- `arr[i]` is equivalent to `*(arr + i)`
+- `&arr[i]` is equivalent to `(arr + i)`
+- `ptr[i]` is equivalent to `*(ptr + i)`
+
+**Traversing Array Using Pointers:**
+
+```c
+#include <stdio.h>
+
+int main() {
+    int arr[] = {10, 20, 30, 40, 50};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    int *ptr = arr;
+
+    // Method 1: Using pointer arithmetic
+    printf("Method 1:\n");
+    for (int i = 0; i < n; i++) {
+        printf("%d ", *(ptr + i));
+    }
+
+    // Method 2: Incrementing pointer
+    printf("\n\nMethod 2:\n");
+    ptr = arr;  // Reset pointer
+    for (int i = 0; i < n; i++) {
+        printf("%d ", *ptr);
+        ptr++;
+    }
+
+    // Method 3: While loop
+    printf("\n\nMethod 3:\n");
+    ptr = arr;
+    int *end = arr + n;
+    while (ptr < end) {
+        printf("%d ", *ptr);
+        ptr++;
+    }
+
+    return 0;
+}
+```
+
+**Array of Pointers:**
+
+```c
+int x = 10, y = 20, z = 30;
+int *arr[3];  // Array of 3 integer pointers
+
+arr[0] = &x;
+arr[1] = &y;
+arr[2] = &z;
+
+for (int i = 0; i < 3; i++) {
+    printf("Value: %d\n", *arr[i]);
+}
+```
+
+**2D Arrays and Pointers:**
+
+```c
+int arr[3][4] = {
+    {1, 2, 3, 4},
+    {5, 6, 7, 8},
+    {9, 10, 11, 12}
+};
+
+// arr[i][j] is equivalent to *(*(arr + i) + j)
+
+// Accessing using pointers
+for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 4; j++) {
+        printf("%d ", *(*(arr + i) + j));
+    }
+    printf("\n");
+}
+```
+
+### Passing Pointers to a Function
+
+Passing pointers to functions allows you to modify the original variable (pass by reference) and work efficiently with arrays.
+
+**Pass by Value vs Pass by Reference:**
+
+**Pass by Value (Cannot modify original):**
+
+```c
+void increment(int x) {
+    x = x + 1;
+}
+
+int main() {
+    int a = 10;
+    increment(a);
+    printf("%d\n", a);  // Output: 10 (unchanged)
+    return 0;
+}
+```
+
+**Pass by Reference (Can modify original):**
+
+```c
+void increment(int *x) {
+    *x = *x + 1;
+}
+
+int main() {
+    int a = 10;
+    increment(&a);  // Pass address
+    printf("%d\n", a);  // Output: 11 (modified)
+    return 0;
+}
+```
+
+**Swapping Two Numbers:**
+
+```c
+void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+int main() {
+    int x = 10, y = 20;
+    printf("Before: x = %d, y = %d\n", x, y);
+
+    swap(&x, &y);
+
+    printf("After: x = %d, y = %d\n", x, y);
+    return 0;
+}
+```
+
+**Passing Arrays to Functions:**
+When you pass an array to a function, you're actually passing a pointer to the first element.
+
+```c
+// All three declarations are equivalent
+void printArray(int arr[], int size);
+void printArray(int *arr, int size);
+void printArray(int arr[10], int size);  // Size in [] is ignored
+
+void printArray(int *arr, int size) {
+    for (int i = 0; i < size; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+}
+
+int main() {
+    int numbers[] = {1, 2, 3, 4, 5};
+    int size = sizeof(numbers) / sizeof(numbers[0]);
+
+    printArray(numbers, size);
+    return 0;
+}
+```
+
+**Modifying Array Elements:**
+
+```c
+void doubleElements(int *arr, int size) {
+    for (int i = 0; i < size; i++) {
+        arr[i] *= 2;  // Modifies original array
+    }
+}
+
+int main() {
+    int numbers[] = {1, 2, 3, 4, 5};
+    int size = 5;
+
+    printf("Before: ");
+    for (int i = 0; i < size; i++) printf("%d ", numbers[i]);
+
+    doubleElements(numbers, size);
+
+    printf("\nAfter: ");
+    for (int i = 0; i < size; i++) printf("%d ", numbers[i]);
+
+    return 0;
+}
+```
+
+**Returning Multiple Values:**
+
+```c
+void getMinMax(int *arr, int size, int *min, int *max) {
+    *min = *max = arr[0];
+
+    for (int i = 1; i < size; i++) {
+        if (arr[i] < *min) *min = arr[i];
+        if (arr[i] > *max) *max = arr[i];
+    }
+}
+
+int main() {
+    int numbers[] = {45, 12, 78, 23, 89, 34};
+    int size = 6;
+    int min, max;
+
+    getMinMax(numbers, size, &min, &max);
+
+    printf("Min: %d, Max: %d\n", min, max);
+    return 0;
+}
+```
+
+### Pointers and Structures
+
+Pointers to structures are commonly used for dynamic memory allocation and efficient structure manipulation.
+
+**Declaring Pointer to Structure:**
+
+```c
+struct Student {
+    int roll_no;
+    char name[50];
+    float marks;
+};
+
+struct Student s1;
+struct Student *ptr = &s1;
+```
+
+**Accessing Structure Members Through Pointer:**
+
+There are two ways to access structure members through a pointer:
+
+```c
+// Method 1: Using arrow operator (->)
+ptr->roll_no = 101;
+strcpy(ptr->name, "Alice");
+ptr->marks = 92.5;
+
+// Method 2: Using dereference and dot operator
+(*ptr).roll_no = 101;
+strcpy((*ptr).name, "Alice");
+(*ptr).marks = 92.5;
+```
+
+**Note:** Arrow operator (`->`) is more commonly used and more readable.
+
+**Complete Example:**
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+struct Student {
+    int roll_no;
+    char name[50];
+    float marks;
+};
+
+void readStudent(struct Student *s) {
+    printf("Enter Roll No: ");
+    scanf("%d", &s->roll_no);
+    printf("Enter Name: ");
+    scanf("%s", s->name);
+    printf("Enter Marks: ");
+    scanf("%f", &s->marks);
+}
+
+void displayStudent(struct Student *s) {
+    printf("\nStudent Details:\n");
+    printf("Roll No: %d\n", s->roll_no);
+    printf("Name: %s\n", s->name);
+    printf("Marks: %.2f\n", s->marks);
+}
+
+int main() {
+    struct Student s1;
+    struct Student *ptr = &s1;
+
+    readStudent(ptr);
+    displayStudent(ptr);
+
+    return 0;
+}
+```
+
+**Array of Structures with Pointers:**
+
+```c
+struct Student {
+    int roll_no;
+    char name[50];
+    float marks;
+};
+
+int main() {
+    struct Student students[3];
+    struct Student *ptr;
+
+    // Reading data
+    for (ptr = students; ptr < students + 3; ptr++) {
+        printf("\nEnter details:\n");
+        printf("Roll No: ");
+        scanf("%d", &ptr->roll_no);
+        printf("Name: ");
+        scanf("%s", ptr->name);
+        printf("Marks: ");
+        scanf("%f", &ptr->marks);
+    }
+
+    // Displaying data
+    printf("\n\nAll Students:\n");
+    for (ptr = students; ptr < students + 3; ptr++) {
+        printf("Roll: %d, Name: %s, Marks: %.2f\n",
+               ptr->roll_no, ptr->name, ptr->marks);
+    }
+
+    return 0;
+}
+```
+
+**Dynamic Memory Allocation for Structures:**
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct Student {
+    int roll_no;
+    char name[50];
+    float marks;
+};
+
+int main() {
+    struct Student *ptr;
+
+    // Allocate memory for one student
+    ptr = (struct Student *)malloc(sizeof(struct Student));
+
+    if (ptr == NULL) {
+        printf("Memory allocation failed\n");
+        return 1;
+    }
+
+    // Use the allocated memory
+    ptr->roll_no = 101;
+    strcpy(ptr->name, "John");
+    ptr->marks = 88.5;
+
+    printf("Roll No: %d\n", ptr->roll_no);
+    printf("Name: %s\n", ptr->name);
+    printf("Marks: %.2f\n", ptr->marks);
+
+    // Free the memory
+    free(ptr);
+
+    return 0;
+}
+```
+
+**Dynamic Array of Structures:**
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Student {
+    int roll_no;
+    char name[50];
+    float marks;
+};
+
+int main() {
+    int n;
+    struct Student *students;
+
+    printf("Enter number of students: ");
+    scanf("%d", &n);
+
+    // Allocate memory for n students
+    students = (struct Student *)malloc(n * sizeof(struct Student));
+
+    if (students == NULL) {
+        printf("Memory allocation failed\n");
+        return 1;
+    }
+
+    // Input data
+    for (int i = 0; i < n; i++) {
+        printf("\nEnter details for student %d:\n", i + 1);
+        printf("Roll No: ");
+        scanf("%d", &(students + i)->roll_no);
+        printf("Name: ");
+        scanf("%s", (students + i)->name);
+        printf("Marks: ");
+        scanf("%f", &(students + i)->marks);
+    }
+
+    // Display data
+    printf("\n\nAll Students:\n");
+    for (int i = 0; i < n; i++) {
+        printf("Roll: %d, Name: %s, Marks: %.2f\n",
+               (students + i)->roll_no,
+               (students + i)->name,
+               (students + i)->marks);
+    }
+
+    // Free memory
+    free(students);
+
+    return 0;
+}
+```
+
+**Self-Referential Structures (Introduction to Linked Lists):**
+
+```c
+struct Node {
+    int data;
+    struct Node *next;  // Pointer to same structure type
+};
+
+int main() {
+    struct Node n1, n2, n3;
+
+    n1.data = 10;
+    n2.data = 20;
+    n3.data = 30;
+
+    n1.next = &n2;
+    n2.next = &n3;
+    n3.next = NULL;
+
+    // Traversing the linked structure
+    struct Node *ptr = &n1;
+    while (ptr != NULL) {
+        printf("%d -> ", ptr->data);
+        ptr = ptr->next;
+    }
+    printf("NULL\n");
+
+    return 0;
+}
+```
+
+---
+
+## Summary
+
+### Key Points - Structures
+
+- Structures group different data types under one name
+- Access members using dot (`.`) operator
+- Arrays of structures store multiple records
+- Structures can contain arrays and nested structures
+- Pass structures by value or by pointer to functions
+- Use `typedef` to simplify structure declarations
+
+### Key Points - Pointers
+
+- Pointers store memory addresses of variables
+- Use `&` to get address, `*` to dereference
+- Pointer arithmetic moves by size of data type
+- Array names are pointers to first element
+- Pass pointers to functions for pass-by-reference
+- Use `->` operator for accessing structure members through pointer
+- Always initialize pointers and check for NULL
+
+### Best Practices
+
+1. Always initialize pointers before use
+2. Check for NULL before dereferencing
+3. Free dynamically allocated memory
+4. Use meaningful variable names
+5. Prefer passing large
+
+# Complete Notes: File Handling in C and FORTRAN Basics
+
+## Table of Contents
+
+1. [Data Files in C](#data-files-in-c)
+2. [FORTRAN Programming Basics](#fortran-programming-basics)
+
+---
+
+## Data Files in C
+
+### 1. Introduction to File Handling
+
+File handling is a crucial aspect of programming that allows programs to store data permanently and retrieve it when needed. In C programming, files are used to store data on secondary storage devices like hard disks, enabling data persistence beyond program execution.
+
+**Why File Handling?**
+
+- Permanent storage of data
+- Data can be accessed across multiple program executions
+- Large volumes of data can be managed efficiently
+- Data sharing between different programs
+
+**Types of Files:**
+
+1. **Text Files**: Store data in human-readable ASCII format
+2. **Binary Files**: Store data in binary format (0s and 1s)
+
+### 2. Defining, Opening and Closing Files
+
+#### File Pointer
+
+A file pointer is a pointer to a structure of type `FILE` (defined in `stdio.h`) that contains information about the file.
+
+```c
+FILE *filePointer;
+```
+
+#### Opening a File: `fopen()`
+
+The `fopen()` function is used to open a file and returns a file pointer.
+
+**Syntax:**
+
+```c
+FILE *fopen(const char *filename, const char *mode);
+```
+
+**File Opening Modes:**
+
+| Mode    | Description        | File Exists                            | File Doesn't Exist |
+| ------- | ------------------ | -------------------------------------- | ------------------ |
+| `"r"`   | Read only          | Opens file                             | Returns NULL       |
+| `"w"`   | Write only         | Truncates to zero length               | Creates new file   |
+| `"a"`   | Append             | Opens for appending                    | Creates new file   |
+| `"r+"`  | Read and write     | Opens file                             | Returns NULL       |
+| `"w+"`  | Read and write     | Truncates to zero length               | Creates new file   |
+| `"a+"`  | Read and append    | Opens for reading and appending        | Creates new file   |
+| `"rb"`  | Read binary        | Opens binary file                      | Returns NULL       |
+| `"wb"`  | Write binary       | Truncates binary file                  | Creates new file   |
+| `"ab"`  | Append binary      | Opens binary for appending             | Creates new file   |
+| `"rb+"` | Read/write binary  | Opens binary file                      | Returns NULL       |
+| `"wb+"` | Read/write binary  | Truncates binary file                  | Creates new file   |
+| `"ab+"` | Read/append binary | Opens binary for reading and appending | Creates new file   |
+
+**Example:**
+
+```c
+FILE *fp;
+fp = fopen("data.txt", "r");
+if (fp == NULL) {
+    printf("Error opening file!\n");
+    exit(1);
+}
+```
+
+#### Closing a File: `fclose()`
+
+The `fclose()` function closes an open file and flushes any buffered data.
+
+**Syntax:**
+
+```c
+int fclose(FILE *filePointer);
+```
+
+**Returns:**
+
+- 0 on success
+- EOF (End of File) on error
+
+**Example:**
+
+```c
+fclose(fp);
+```
+
+**Why Close Files?**
+
+- Frees system resources
+- Ensures all buffered data is written to disk
+- Prevents data corruption
+- Avoids running out of file descriptors
+
+### 3. Input/Output Operations on Files
+
+#### Character Input/Output
+
+**a) `fgetc()` - Read a character**
+
+```c
+int fgetc(FILE *stream);
+```
+
+Reads and returns the next character from the file. Returns EOF on end of file or error.
+
+**Example:**
+
+```c
+FILE *fp = fopen("file.txt", "r");
+char ch;
+while ((ch = fgetc(fp)) != EOF) {
+    printf("%c", ch);
+}
+fclose(fp);
+```
+
+**b) `fputc()` - Write a character**
+
+```c
+int fputc(int character, FILE *stream);
+```
+
+Writes a character to the file. Returns the character written or EOF on error.
+
+**Example:**
+
+```c
+FILE *fp = fopen("output.txt", "w");
+fputc('A', fp);
+fputc('B', fp);
+fclose(fp);
+```
+
+**c) `getc()` and `putc()` - Macro versions**
+Similar to `fgetc()` and `fputc()` but implemented as macros for efficiency.
+
+```c
+int getc(FILE *stream);
+int putc(int character, FILE *stream);
+```
+
+#### String Input/Output
+
+**a) `fgets()` - Read a string**
+
+```c
+char *fgets(char *str, int n, FILE *stream);
+```
+
+Reads up to n-1 characters from the file or until newline/EOF is encountered.
+
+**Example:**
+
+```c
+FILE *fp = fopen("data.txt", "r");
+char buffer[100];
+if (fgets(buffer, 100, fp) != NULL) {
+    printf("Read: %s", buffer);
+}
+fclose(fp);
+```
+
+**b) `fputs()` - Write a string**
+
+```c
+int fputs(const char *str, FILE *stream);
+```
+
+Writes a string to the file (does not append newline automatically).
+
+**Example:**
+
+```c
+FILE *fp = fopen("output.txt", "w");
+fputs("Hello, World!\n", fp);
+fputs("Second line\n", fp);
+fclose(fp);
+```
+
+#### Formatted Input/Output
+
+**a) `fprintf()` - Formatted write**
+
+```c
+int fprintf(FILE *stream, const char *format, ...);
+```
+
+Similar to `printf()` but writes to a file.
+
+**Example:**
+
+```c
+FILE *fp = fopen("data.txt", "w");
+int age = 25;
+char name[] = "John";
+fprintf(fp, "Name: %s, Age: %d\n", name, age);
+fclose(fp);
+```
+
+**b) `fscanf()` - Formatted read**
+
+```c
+int fscanf(FILE *stream, const char *format, ...);
+```
+
+Similar to `scanf()` but reads from a file.
+
+**Example:**
+
+```c
+FILE *fp = fopen("data.txt", "r");
+int age;
+char name[50];
+fscanf(fp, "Name: %s, Age: %d", name, &age);
+printf("Name: %s, Age: %d\n", name, age);
+fclose(fp);
+```
+
+#### Block Input/Output (Binary Files)
+
+**a) `fread()` - Read block of data**
+
+```c
+size_t fread(void *ptr, size_t size, size_t count, FILE *stream);
+```
+
+Reads `count` elements of `size` bytes each from the file.
+
+**Example:**
+
+```c
+struct Student {
+    int id;
+    char name[50];
+    float marks;
+};
+
+FILE *fp = fopen("students.dat", "rb");
+struct Student s;
+fread(&s, sizeof(struct Student), 1, fp);
+fclose(fp);
+```
+
+**b) `fwrite()` - Write block of data**
+
+```c
+size_t fwrite(const void *ptr, size_t size, size_t count, FILE *stream);
+```
+
+Writes `count` elements of `size` bytes each to the file.
+
+**Example:**
+
+```c
+struct Student s = {101, "Alice", 85.5};
+FILE *fp = fopen("students.dat", "wb");
+fwrite(&s, sizeof(struct Student), 1, fp);
+fclose(fp);
+```
+
+#### File Position Functions
+
+**a) `fseek()` - Move file pointer**
+
+```c
+int fseek(FILE *stream, long offset, int origin);
+```
+
+**Origin values:**
+
+- `SEEK_SET` (0): Beginning of file
+- `SEEK_CUR` (1): Current position
+- `SEEK_END` (2): End of file
+
+**Example:**
+
+```c
+fseek(fp, 0, SEEK_SET);  // Move to beginning
+fseek(fp, 10, SEEK_CUR); // Move 10 bytes forward
+fseek(fp, -5, SEEK_END); // Move 5 bytes before end
+```
+
+**b) `ftell()` - Get current position**
+
+```c
+long ftell(FILE *stream);
+```
+
+Returns the current file position or -1L on error.
+
+**Example:**
+
+```c
+long position = ftell(fp);
+printf("Current position: %ld\n", position);
+```
+
+**c) `rewind()` - Reset file pointer**
+
+```c
+void rewind(FILE *stream);
+```
+
+Moves the file pointer to the beginning of the file.
+
+**Example:**
+
+```c
+rewind(fp);  // Equivalent to fseek(fp, 0, SEEK_SET)
+```
+
+#### End-of-File Detection
+
+**a) `feof()` - Check for EOF**
+
+```c
+int feof(FILE *stream);
+```
+
+Returns non-zero if end-of-file is reached.
+
+**Example:**
+
+```c
+while (!feof(fp)) {
+    char ch = fgetc(fp);
+    if (ch != EOF) {
+        printf("%c", ch);
+    }
+}
+```
+
+### 4. Error Handling During Input/Output Operations
+
+#### Error Detection Functions
+
+**a) `ferror()` - Check for errors**
+
+```c
+int ferror(FILE *stream);
+```
+
+Returns non-zero if an error has occurred on the stream.
+
+**Example:**
+
+```c
+if (ferror(fp)) {
+    printf("Error occurred during file operation\n");
+}
+```
+
+**b) `clearerr()` - Clear error indicators**
+
+```c
+void clearerr(FILE *stream);
+```
+
+Clears the end-of-file and error indicators for the stream.
+
+**Example:**
+
+```c
+clearerr(fp);
+```
+
+**c) `perror()` - Print error message**
+
+```c
+void perror(const char *message);
+```
+
+Prints the error message followed by the system error description.
+
+**Example:**
+
+```c
+FILE *fp = fopen("nonexistent.txt", "r");
+if (fp == NULL) {
+    perror("Error opening file");
+    // Output: Error opening file: No such file or directory
+}
+```
+
+#### Common File Errors and Handling
+
+**1. File Opening Errors**
+
+```c
+FILE *fp = fopen("data.txt", "r");
+if (fp == NULL) {
+    perror("Error");
+    fprintf(stderr, "Failed to open file: data.txt\n");
+    exit(EXIT_FAILURE);
+}
+```
+
+**2. Read/Write Errors**
+
+```c
+int result = fwrite(data, size, count, fp);
+if (result != count) {
+    if (ferror(fp)) {
+        fprintf(stderr, "Error writing to file\n");
+        clearerr(fp);
+    }
+}
+```
+
+**3. File Closing Errors**
+
+```c
+if (fclose(fp) == EOF) {
+    perror("Error closing file");
+}
+```
+
+**4. Buffer Flushing**
+
+```c
+int fflush(FILE *stream);
+```
+
+Forces any buffered output to be written to the file immediately.
+
+**Example:**
+
+```c
+fprintf(fp, "Important data\n");
+if (fflush(fp) != 0) {
+    perror("Error flushing buffer");
+}
+```
+
+#### Best Practices for Error Handling
+
+1. **Always check if file opened successfully**
+
+```c
+FILE *fp = fopen("file.txt", "r");
+if (fp == NULL) {
+    fprintf(stderr, "Cannot open file\n");
+    return 1;
+}
+```
+
+2. **Use `errno` for detailed error information**
+
+```c
+#include <errno.h>
+
+FILE *fp = fopen("file.txt", "r");
+if (fp == NULL) {
+    fprintf(stderr, "Error %d: %s\n", errno, strerror(errno));
+    return 1;
+}
+```
+
+3. **Check return values of I/O functions**
+
+```c
+size_t written = fwrite(buffer, 1, size, fp);
+if (written != size) {
+    fprintf(stderr, "Write error: expected %zu, wrote %zu\n", size, written);
+}
+```
+
+4. **Close files in reverse order of opening**
+
+```c
+FILE *fp1 = fopen("file1.txt", "r");
+FILE *fp2 = fopen("file2.txt", "w");
+
+// ... operations ...
+
+fclose(fp2);
+fclose(fp1);
+```
+
+5. **Use `atexit()` for critical cleanup**
+
+```c
+void cleanup() {
+    if (fp != NULL) {
+        fclose(fp);
+    }
+}
+
+int main() {
+    atexit(cleanup);
+    fp = fopen("file.txt", "r");
+    // ... program code ...
+}
+```
+
+### Complete Example: File Copy with Error Handling
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    FILE *sourceFile, *destFile;
+    char ch;
+
+    // Open source file for reading
+    sourceFile = fopen("source.txt", "r");
+    if (sourceFile == NULL) {
+        perror("Error opening source file");
+        return EXIT_FAILURE;
+    }
+
+    // Open destination file for writing
+    destFile = fopen("destination.txt", "w");
+    if (destFile == NULL) {
+        perror("Error opening destination file");
+        fclose(sourceFile);
+        return EXIT_FAILURE;
+    }
+
+    // Copy contents
+    while ((ch = fgetc(sourceFile)) != EOF) {
+        if (fputc(ch, destFile) == EOF) {
+            fprintf(stderr, "Error writing to destination file\n");
+            fclose(sourceFile);
+            fclose(destFile);
+            return EXIT_FAILURE;
+        }
+    }
+
+    // Check for read errors
+    if (ferror(sourceFile)) {
+        fprintf(stderr, "Error reading from source file\n");
+        fclose(sourceFile);
+        fclose(destFile);
+        return EXIT_FAILURE;
+    }
+
+    // Close files
+    if (fclose(sourceFile) == EOF) {
+        perror("Error closing source file");
+    }
+
+    if (fclose(destFile) == EOF) {
+        perror("Error closing destination file");
+        return EXIT_FAILURE;
+    }
+
+    printf("File copied successfully!\n");
+    return EXIT_SUCCESS;
+}
+```
+
+### Example: Writing and Reading Student Records
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct Student {
+    int rollNo;
+    char name[50];
+    float marks;
+};
+
+void writeStudents() {
+    FILE *fp = fopen("students.dat", "wb");
+    if (fp == NULL) {
+        perror("Error opening file for writing");
+        return;
+    }
+
+    struct Student students[] = {
+        {101, "Alice", 85.5},
+        {102, "Bob", 78.0},
+        {103, "Charlie", 92.3}
+    };
+
+    size_t written = fwrite(students, sizeof(struct Student), 3, fp);
+    if (written != 3) {
+        fprintf(stderr, "Error: Could not write all records\n");
+    } else {
+        printf("Successfully wrote %zu records\n", written);
+    }
+
+    if (fclose(fp) == EOF) {
+        perror("Error closing file");
+    }
+}
+
+void readStudents() {
+    FILE *fp = fopen("students.dat", "rb");
+    if (fp == NULL) {
+        perror("Error opening file for reading");
+        return;
+    }
+
+    struct Student s;
+    printf("\nStudent Records:\n");
+    printf("%-10s %-20s %-10s\n", "Roll No", "Name", "Marks");
+    printf("----------------------------------------\n");
+
+    while (fread(&s, sizeof(struct Student), 1, fp) == 1) {
+        printf("%-10d %-20s %-10.2f\n", s.rollNo, s.name, s.marks);
+    }
+
+    if (ferror(fp)) {
+        fprintf(stderr, "Error reading from file\n");
+    }
+
+    fclose(fp);
+}
+
+int main() {
+    writeStudents();
+    readStudents();
+    return 0;
+}
+```
+
+---
+
+## FORTRAN Programming Basics
+
+### 1. Introduction to FORTRAN
+
+FORTRAN (FORmula TRANslation) is one of the oldest high-level programming languages, developed by IBM in the 1950s. It is particularly suited for scientific and numerical computation.
+
+**Key Features:**
+
+- Strong mathematical computation capabilities
+- Efficient array processing
+- Widely used in engineering and scientific applications
+- Column-based syntax in older versions (FORTRAN 77)
+
+### 2. Character Set
+
+FORTRAN uses the following character set:
+
+**Letters:** A-Z (uppercase), a-z (lowercase)
+
+**Digits:** 0-9
+
+**Special Characters:**
+
+- `+` (plus)
+- `-` (minus)
+- `*` (asterisk/multiplication)
+- `/` (slash/division)
+- `**` (exponentiation)
+- `=` (assignment/equality)
+- `( )` (parentheses)
+- `,` (comma)
+- `.` (period/decimal point)
+- `'` (apostrophe for strings)
+- `:` (colon)
+- `!` (exclamation for comments)
+
+**Note:** In FORTRAN 77, lowercase letters are treated the same as uppercase.
+
+### 3. Data Types, Constants and Variables
+
+#### Basic Data Types
+
+**a) INTEGER**
+Used for whole numbers without decimal points.
+
+```fortran
+INTEGER :: age, count
+age = 25
+count = 100
+```
+
+**b) REAL**
+Used for floating-point numbers (numbers with decimal points).
+
+```fortran
+REAL :: price, temperature
+price = 19.99
+temperature = 98.6
+```
+
+**c) DOUBLE PRECISION**
+Used for double-precision floating-point numbers (more accuracy than REAL).
+
+```fortran
+DOUBLE PRECISION :: pi, result
+pi = 3.141592653589793D0
+```
+
+**d) COMPLEX**
+Used for complex numbers (real and imaginary parts).
+
+```fortran
+COMPLEX :: z
+z = (3.0, 4.0)  ! 3 + 4i
+```
+
+**e) LOGICAL**
+Used for Boolean values (.TRUE. or .FALSE.).
+
+```fortran
+LOGICAL :: flag
+flag = .TRUE.
+```
+
+**f) CHARACTER**
+Used for storing text/strings.
+
+```fortran
+CHARACTER(LEN=20) :: name
+CHARACTER :: initial
+name = "John Doe"
+initial = 'J'
+```
+
+#### Constants
+
+Constants are fixed values that do not change during program execution.
+
+**Types of Constants:**
+
+1. **Integer Constants:** 123, -45, 0
+2. **Real Constants:** 3.14, -0.5, 2.0E3 (2.0 × 10³)
+3. **Double Precision Constants:** 3.14159D0, 1.5D-5
+4. **Character Constants:** 'Hello', "FORTRAN"
+5. **Logical Constants:** .TRUE., .FALSE.
+
+**Named Constants (PARAMETER):**
+
+```fortran
+REAL, PARAMETER :: PI = 3.14159
+INTEGER, PARAMETER :: MAX_SIZE = 100
+```
+
+#### Variables
+
+Variables are named memory locations that can store data values.
+
+**Variable Naming Rules:**
+
+- Must start with a letter
+- Can contain letters, digits, and underscores
+- Maximum length varies (typically 31 characters in FORTRAN 77)
+- Case insensitive
+
+**Variable Declaration:**
+
+```fortran
+INTEGER :: i, j, k
+REAL :: x, y, z
+CHARACTER(LEN=50) :: message
+LOGICAL :: isValid
+```
+
+**Implicit Typing:**
+In FORTRAN 77, variables are implicitly typed:
+
+- Variables starting with I, J, K, L, M, N are INTEGER
+- All others are REAL
+
+```fortran
+! Implicit typing (not recommended)
+I = 10        ! INTEGER by default
+X = 5.5       ! REAL by default
+```
+
+**Explicit Declaration (Recommended):**
+
+```fortran
+IMPLICIT NONE  ! Disables implicit typing
+INTEGER :: count
+REAL :: average
+```
+
+### 4. Arithmetic Operations and Library Functions
+
+#### Arithmetic Operators
+
+| Operator | Operation      | Example   | Result               |
+| -------- | -------------- | --------- | -------------------- |
+| `+`      | Addition       | 5 + 3     | 8                    |
+| `-`      | Subtraction    | 5 - 3     | 2                    |
+| `*`      | Multiplication | 5 \* 3    | 15                   |
+| `/`      | Division       | 5 / 2     | 2 (integer division) |
+| `/`      | Division       | 5.0 / 2.0 | 2.5 (real division)  |
+| `**`     | Exponentiation | 2 \*\* 3  | 8                    |
+
+**Example:**
+
+```fortran
+INTEGER :: a, b, result
+REAL :: x, y, z
+
+a = 10
+b = 3
+result = a + b     ! 13
+result = a - b     ! 7
+result = a * b     ! 30
+result = a / b     ! 3 (integer division)
+
+x = 10.0
+y = 3.0
+z = x / y          ! 3.333...
+z = x ** 2         ! 100.0
+```
+
+#### Operator Precedence
+
+1. `**` (exponentiation) - highest
+2. `*`, `/` (multiplication, division)
+3. `+`, `-` (addition, subtraction) - lowest
+
+Use parentheses to override precedence:
+
+```fortran
+result = (a + b) * c
+```
+
+#### Intrinsic (Library) Functions
+
+**Mathematical Functions:**
+
+| Function   | Description         | Example            |
+| ---------- | ------------------- | ------------------ |
+| `ABS(x)`   | Absolute value      | ABS(-5) = 5        |
+| `SQRT(x)`  | Square root         | SQRT(16.0) = 4.0   |
+| `EXP(x)`   | Exponential (eˣ)    | EXP(1.0) ≈ 2.718   |
+| `LOG(x)`   | Natural logarithm   | LOG(2.718) ≈ 1.0   |
+| `LOG10(x)` | Base-10 logarithm   | LOG10(100.0) = 2.0 |
+| `SIN(x)`   | Sine (x in radians) | SIN(0.0) = 0.0     |
+| `COS(x)`   | Cosine              | COS(0.0) = 1.0     |
+| `TAN(x)`   | Tangent             | TAN(0.0) = 0.0     |
+| `ASIN(x)`  | Arc sine            | ASIN(0.5)          |
+| `ACOS(x)`  | Arc cosine          | ACOS(0.5)          |
+| `ATAN(x)`  | Arc tangent         | ATAN(1.0)          |
+
+**Other Useful Functions:**
+
+| Function         | Description         | Example                |
+| ---------------- | ------------------- | ---------------------- |
+| `INT(x)`         | Convert to integer  | INT(3.7) = 3           |
+| `REAL(i)`        | Convert to real     | REAL(5) = 5.0          |
+| `MOD(a,b)`       | Modulus (remainder) | MOD(10, 3) = 1         |
+| `MAX(a,b,c,...)` | Maximum value       | MAX(5, 2, 9) = 9       |
+| `MIN(a,b,c,...)` | Minimum value       | MIN(5, 2, 9) = 2       |
+| `SIGN(a,b)`      | Transfer sign       | SIGN(5.0, -1.0) = -5.0 |
+
+**Example:**
+
+```fortran
+REAL :: x, y, angle
+x = 16.0
+y = SQRT(x)           ! y = 4.0
+
+angle = 0.0
+y = SIN(angle)        ! y = 0.0
+
+x = -5.5
+y = ABS(x)            ! y = 5.5
+
+x = 3.7
+y = REAL(INT(x))      ! y = 3.0
+```
+
+### 5. Structure of a FORTRAN Program
+
+A typical FORTRAN program has the following structure:
+
+```fortran
+      PROGRAM program_name
+C     Declaration section
+      IMPLICIT NONE
+      INTEGER :: variable1
+      REAL :: variable2
+
+C     Executable statements
+      variable1 = 10
+      variable2 = 20.5
+
+C     Output
+      PRINT *, 'Hello, FORTRAN!'
+      PRINT *, variable1, variable2
+
+C     Program termination
+      STOP
+      END PROGRAM program_name
+```
+
+**Components:**
+
+1. **PROGRAM statement:** Defines the program name
+2. **Declaration section:** Variable declarations
+3. **Executable statements:** Program logic
+4. **END statement:** Marks the end of the program
+
+**Comments:**
+
+- In FORTRAN 77: Use `C` or `*` in column 1
+- In FORTRAN 90+: Use `!` anywhere on a line
+
+```fortran
+C     This is a comment in FORTRAN 77
+      ! This is a comment in FORTRAN 90+
+      x = 5  ! Inline comment
+```
+
+**Column Format (FORTRAN 77):**
+
+- Columns 1-5: Statement labels
+- Column 6: Continuation character
+- Columns 7-72: FORTRAN statements
+- Columns 73-80: Sequence numbers (optional)
+
+**Example Program:**
+
+```fortran
+      PROGRAM circle_area
+      IMPLICIT NONE
+      REAL :: radius, area
+      REAL, PARAMETER :: PI = 3.14159
+
+      PRINT *, 'Enter radius:'
+      READ *, radius
+
+      area = PI * radius ** 2
+
+      PRINT *, 'Area of circle:', area
+
+      STOP
+      END PROGRAM circle_area
+```
+
+### 6. Formatted and Unformatted Input/Output Statements
+
+#### Unformatted I/O (List-Directed I/O)
+
+**Output - PRINT Statement:**
+
+```fortran
+PRINT *, 'message', variable1, variable2
+```
+
+**Input - READ Statement:**
+
+```fortran
+READ *, variable1, variable2
+```
+
+**Example:**
+
+```fortran
+INTEGER :: age
+REAL :: height
+PRINT *, 'Enter age and height:'
+READ *, age, height
+PRINT *, 'Age:', age, 'Height:', height
+```
+
+#### Formatted I/O
+
+Formatted I/O provides precise control over the appearance of input and output.
+
+**Output - WRITE Statement:**
+
+```fortran
+WRITE(unit, format) variable_list
+```
+
+**Input - READ Statement:**
+
+```fortran
+READ(unit, format) variable_list
+```
+
+**Common Format Specifiers:**
+
+| Specifier | Description                         | Example    |
+| --------- | ----------------------------------- | ---------- |
+| `I5`      | Integer, 5 columns wide             | 12345      |
+| `F8.2`    | Real, 8 columns, 2 decimals         | 123.45     |
+| `E12.4`   | Exponential, 12 columns, 4 decimals | 1.2345E+02 |
+| `A10`     | Character, 10 columns               | Hello      |
+| `X`       | Space                               |            |
+| `/`       | New line                            |            |
+
+**Examples:**
+
+```fortran
+! Format with statement label
+      INTEGER :: num
+      REAL :: price
+
+      num = 42
+      price = 19.99
+
+      WRITE(*, 100) num, price
+100   FORMAT('Number:', I5, 5X, 'Price:', F8.2)
+! Output: Number:   42     Price:   19.99
+```
+
+```fortran
+! Inline format
+      WRITE(*, '(A, I3, A, F6.2)') 'Count:', num, ' Price:', price
+```
+
+**Reading with Format:**
+
+```fortran
+      INTEGER :: year
+      REAL :: temperature
+
+      PRINT *, 'Enter year and temperature:'
+      READ(*, '(I4, F6.2)') year, temperature
+```
+
+**File I/O with Unit Numbers:**
+
+```fortran
+      OPEN(UNIT=10, FILE='data.txt', STATUS='NEW')
+      WRITE(10, '(I5, F8.2)') num, price
+      CLOSE(10)
+```
+
+### 7. Control Structures
+
+#### GOTO Statement
+
+The GOTO statement transfers control to a labeled statement (generally discouraged in modern programming).
+
+```fortran
+      GOTO label
+
+label statement
+```
+
+**Example:**
+
+```fortran
+      INTEGER :: i
+      i = 1
+
+10    PRINT *, i
+      i = i + 1
+      IF (i <= 5) GOTO 10
+
+      PRINT *, 'Done'
+```
+
+#### Logical IF Statement
+
+Executes a single statement if the condition is true.
+
+**Syntax:**
+
+```fortran
+IF (logical_expression) statement
+```
+
+**Example:**
+
+```fortran
+      INTEGER :: x
+      x = 10
+
+      IF (x > 5) PRINT *, 'x is greater than 5'
+      IF (x == 10) x = x + 1
+```
+
+**Block IF Statement:**
+
+```fortran
+      IF (condition) THEN
+          statements
+      ELSE IF (condition) THEN
+          statements
+      ELSE
+          statements
+      END IF
+```
+
+**Example:**
+
+```fortran
+      INTEGER :: score
+
+      PRINT *, 'Enter score:'
+      READ *, score
+
+      IF (score >= 90) THEN
+          PRINT *, 'Grade: A'
+      ELSE IF (score >= 80) THEN
+          PRINT *, 'Grade: B'
+      ELSE IF (score >= 70) THEN
+          PRINT *, 'Grade: C'
+      ELSE
+          PRINT *, 'Grade: F'
+      END IF
+```
+
+**Logical Operators:**
+
+- `.EQ.` or `==` (equal to)
+- `.NE.` or `/=` (not equal to)
+- `.LT.` or `<` (less than)
+- `.LE.` or `<=` (less than or equal)
+- `.GT.` or `>` (greater than)
+- `.GE.` or `>=` (greater than or equal)
+- `.AND.` (logical AND)
+- `.OR.` (logical OR)
+- `.NOT.` (logical NOT)
+
+**Example:**
+
+```fortran
+      IF (x > 0 .AND. x < 100) THEN
+          PRINT *, 'x is between 0 and 100'
+      END IF
+```
+
+#### Arithmetic IF Statement
+
+A three-way branch based on the sign of an arithmetic expression (FORTRAN 77).
+
+**Syntax:**
+
+```fortran
+IF (arithmetic_expression) label1, label2, label3
+```
+
+- If expression < 0, go to label1
+- If expression = 0, go to label2
+- If expression > 0, go to label3
+
+**Example:**
+
+```fortran
+      INTEGER :: num
+
+      PRINT *, 'Enter a number:'
+      READ *, num
+
+      IF (num) 10, 20, 30
+
+10    PRINT *, 'Negative'
+      GOTO 40
+
+20    PRINT *, 'Zero'
+      GOTO 40
+
+30    PRINT *, 'Positive'
+
+40    CONTINUE
+```
+
+#### DO Loops
+
+DO loops provide iteration in FORTRAN.
+
+**Basic DO Loop Syntax:**
+
+```fortran
+DO label variable = start, end, step
+    statements
+label CONTINUE
+```
+
+**Modern Syntax (FORTRAN 90+):**
+
+```fortran
+DO variable = start, end, step
+    statements
+END DO
+```
+
+**Example:**
+
+```fortran
+! Print numbers 1 to 10
+      INTEGER :: i
+
+      DO 100 i = 1, 10
+          PRINT *, i
+100   CONTINUE
+```
